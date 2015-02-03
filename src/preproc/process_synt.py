@@ -87,7 +87,6 @@ def process_synt(datadir, station, event = None, stationxml_dir = None, period_b
     for i, tr in enumerate(st):
         #get component name
         cmpname = tr.stats.channel
-        
         #print tr.stats
         #tr.interpolate(sampling_rate=sampling_rate, starttime=starttime,
         #                npts=npts)
