@@ -22,6 +22,7 @@ import obspy.xseed
 import os
 from scipy import interp
 import warnings
+from obspy import readEvents
 
 
 DEFAULT_MU = 32e9
@@ -75,7 +76,6 @@ class CMTSource(object):
         self.m_rt = m_rt
         self.m_rp = m_rp
         self.m_tp = m_tp
-
 
     @classmethod
     def from_CMTSOLUTION_file(self, filename):
@@ -164,6 +164,17 @@ class CMTSource(object):
             f.write('Mrt:            %7.4f\n' % (self.m_rt * 1e7,))
             f.write('Mrp:            %7.4f\n' % (self.m_rp * 1e7,))
             f.write('Mtp:            %7.4f\n' % (self.m_tp * 1e7,))
+
+    @classmethod
+    def from_quakeml_to_cmt(self, quakemlfile):
+
+        if not os.path.exists(quakemlfile):
+            raise IOError("Quakemlfile not exists")
+
+        cat = readEvents(quakemlfile)
+        event = cat.events[0]
+        PDEsolution = event.origins[0]
+        CMTsolution = event.event.preferred_origin()
 
     @property
     def M0(self):
