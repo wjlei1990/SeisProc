@@ -1,5 +1,5 @@
-* Tools used in preprocessing:
+### Tools used in preprocessing:
 
-- 1. Data download tool
-- 2. Preprocessing tool
-- 3. Preprocessing tool based on asdf format
+- Data download tool
+- Preprocessing tool
+- Preprocessing tool based on asdf format
