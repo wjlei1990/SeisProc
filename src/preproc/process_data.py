@@ -4,148 +4,40 @@ import time
 import glob
 import os
 import re
+from data_util import *
 
-def find_first_digit(string):
-    m = re.search("\d", string)
-    return m.start()
+quakemldir = "/ccs/home/lei/SOURCE_INVERSION/quakeml/cmt_deep_events/quakeml"
+stationxml_dir = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD/deep_events/stationxml"
+outputbase = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD_PROC"
+database = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD/deep_events/waveforms"
 
-def adjust_event_name(event_name):
-    """
-    Adjust from "C010104J" to "010104J"
-    """
-    pos=find_first_digit(event_name)
-    return event_name[pos:]
-
-def get_event_name(event):
-    for i, desc in enumerate(event.event_descriptions):
-        if desc.type == 'earthquake name':
-            return desc.text
-
-def process_data(filename, event = None, stationxml_dir = None, period_band = None, npts=None,
-                sampling_rate=None, output_dir=None):
-
-    print "\nProcessing file: %s" %filename
-    # interpolation value
-    #npts = 3630
-    #sampling_rate = 1.0  # Hz
-    min_period = period_band[0]
-    max_period = period_band[1]
-    f2 = 1.0 / max_period
-    f3 = 1.0 / min_period
-    f1 = 0.8 * f2
-    f4 = 1.2 * f3
-    pre_filt = (f1, f2, f3, f4)
-
-    # fetch event information
-    event_name = get_event_name(event)
-    short_event_name = adjust_event_name(event_name)
-
-    output_path = output_dir
-    print "output_path:", output_path
-    if not os.path.exists(output_path):
-        print "create dir"
-        os.mkdir(output_path)
-
-    origin = event.preferred_origin() or event.origins[0]
-    event_latitude = origin.latitude
-    event_longitude = origin.longitude
-    event_time = origin.time
-    event_depth = origin.depth
-    starttime = event_time
-
-    # read mseed file
-    st = read(filename)
-    print st
-    nrecords = len(st)
-    stname = st[0].stats.station
-    nwname = st[0].stats.network
-
-    # fetch station information and read stationxml file
-    # print "LALALALA:",stationxml_dir, adjust_event_name
-    stationxml_file = os.path.join(stationxml_dir, short_event_name, "%s.%s.xml" %(nwname, stname))
-    print "Attaching stationxml file:", stationxml_file
-    inv = read_inventory(stationxml_file)
-    st.attach_response(inv)
-    #st.plot()
-
-    for i, tr in enumerate(st):
-        #print tr.stats
-        #tr.interpolate(sampling_rate=sampling_rate, starttime=starttime,
-        #                npts=npts)
-        #tr.decimate(4, strict_length=False,no_filter=True)
-        print "Processing %d of total %d" %(i+1, nrecords)
-        print "Detrend, Demean and Taper..."
-        tr.detrend("linear")
-        tr.detrend("demean")
-        tr.taper(max_percentage=0.05, type="hann")
-        #print "response show:"
-        #print tr.stats.response
-        print "Remove Response..."
-        tr.remove_response(output="DISP", pre_filt=pre_filt, zero_mean=False,
-                           taper=False)
-        print "Detrend, Demean and Taper again..."
-        tr.detrend("linear")
-        tr.detrend("demean")
-        tr.taper(max_percentage=0.05, type="hann")
-        print "Interpolate..."
-        try:
-            tr.interpolate(sampling_rate=sampling_rate, starttime=starttime,
-                           npts=npts)
-        except Exception as e:
-            print "error:", e
-            return
-
-    #rotate
-    station_latitude = inv[0][0].latitude
-    station_longitude = inv[0][0].longitude
-    #print station_latitude, station_longitude
-    _, baz, _ = gps2DistAzimuth(station_latitude, station_longitude,
-                                    event_latitude, event_longitude)
-    components = [tr.stats.channel[-1] for tr in st]
-    print "components:", components
-    if "N" in components and "E" in components:
-        print "Rotate"
-        station_latitude = inv[0][0].latitude
-        station_longitude = inv[0][0].longitude
-        _, baz, _ = gps2DistAzimuth(station_latitude, station_longitude,
-                                event_latitude, event_longitude)
-        st.rotate(method="NE->RT", back_azimuth=baz)
-
-    #output_fn = nwname + "." + stname + ".mseed"
-    #output_path = os.path.join(output_dir, output_fn)
-    #print output_path
-
-    # save processed file
-    #st.write(output_path, format="MSEED")
-    for tr in st:
-        comp = tr.stats.channel
-        loc = tr.stats.location
-        fn = stname + "." + nwname + "." + loc + ".BH" + comp[-1:] + ".sac"
-        path = os.path.join(output_dir, fn)
-        tr.write(path, format = "SAC")
-
-    # save plot fig
-    figure_name = nwname + "." + stname + ".png"
-    figure_path = os.path.join(output_dir, figure_name)
-    print "figure path:", figure_path
-    st.plot(outfile=figure_path)
+eventname = "201406301955A"
 
 # event
-cat = readEvents('../Quakeml/C010104J.xml')
+eventfile = os.path.join(quakemldir, "%s.xml" %eventname)
+print "Quakeml file:", eventfile
+
+if not os.path.isfile(eventfile):
+    raise ValueError("Event file not exist")
+
+cat = readEvents(eventfile)
 event = cat.events[0]
 
 # set the filter band
 #period_band = [27, 60]
 period_band = [27, 60]
 
-# stationxml dir
-stationxml_dir = '../stationxml'
-
 #output dir
-
 event_name = get_event_name(event)
 event_name = adjust_event_name(event_name)
-output_dir = "../PROC/OBSD/" + event_name + "_" + str(period_band[0]) + "_" + str(period_band[1])
+output_dir = event_name + "_" + str(period_band[0]) + "_" + str(period_band[1])
+output_dir = os.path.join(outputbase, output_dir)
+
+# data dir
+datadir = os.path.join(database, event_name)
+
+print "output dir:", output_dir
+print "datadir:", datadir
 
 # npts and sampling rate in iterpolation
 npts = 3600
@@ -154,10 +46,12 @@ sampling_rate = 1.0
 # processing
 t1 = time.time()
 # data filename
-datadir = "../OBSD/010104J"
+
+filelist = glob.glob(datadir+"/*.mseed")
+print "Total number of file:", len(filelist)
 
 #process_data(datafile, event, stationxml_dir, period_band, npts, sampling_rate, output_dir)
-for datafile in glob.glob(datadir+"/*.mseed"):
+for datafile in filelist:
     process_data(datafile, event, stationxml_dir, period_band, npts, sampling_rate, output_dir)
 #datafile = "../OBSD/010104J/IC.ENH.mseed"
 #process_data(datafile, event, stationxml_dir, period_band, npts, sampling_rate, output_dir)
