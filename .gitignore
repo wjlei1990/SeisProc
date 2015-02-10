@@ -5,3 +5,4 @@ log
 *.sw*
 *.h5
 *.py~
+test.py

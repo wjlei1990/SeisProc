@@ -44,7 +44,7 @@ def process_data(filename, event = None, stationxml_dir = None, period_band = No
     print "output_path:", output_path
     if not os.path.exists(output_path):
         print "create dir"
-        os.mkdir(output_path)
+        os.makedirs(output_path)
 
     origin = event.preferred_origin() or event.origins[0]
     event_latitude = origin.latitude
