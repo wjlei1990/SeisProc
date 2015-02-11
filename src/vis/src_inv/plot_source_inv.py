@@ -59,7 +59,7 @@ G = gridspec.GridSpec(3, 3)
 
 # Original CMT
 ax = plt.subplot(G[2,2])
-cmtfile = "./cmt/CMTSOLUTION_" + event_name + "_init"
+cmtfile = "./cmt/" + event_name + "_init"
 cmt_init = Source.from_CMTSOLUTION_file(cmtfile)
 mt_init = [cmt_init.m_rr, cmt_init.m_tt, cmt_init.m_pp, cmt_init.m_rt, cmt_init.m_rp, cmt_init.m_tp]
 print cmt_init.moment_magnitude
@@ -67,7 +67,7 @@ plot_si_bb(ax, cmt_init)
 
 # 6ZT
 ax = plt.subplot(G[0,0])
-cmtfile = "./cmt/CMTSOLUTION_" + event_name + "_6p_ZT"
+cmtfile = "./cmt/" + event_name + "_6p_ZT"
 cmt = Source.from_CMTSOLUTION_file(cmtfile)
 print cmt.moment_magnitude
 mt = [cmt.m_rr, cmt.m_tt, cmt.m_pp, cmt.m_rt, cmt.m_rp, cmt.m_tp]
@@ -75,7 +75,7 @@ plot_si_bb_comp(ax, cmt, cmt_init)
 
 # 7ZT
 ax = plt.subplot(G[0,1])
-cmtfile = "./cmt/CMTSOLUTION_" + event_name + "_7p_ZT"
+cmtfile = "./cmt/" + event_name + "_7p_ZT"
 cmt = Source.from_CMTSOLUTION_file(cmtfile)
 print cmt.moment_magnitude
 mt = [cmt.m_rr, cmt.m_tt, cmt.m_pp, cmt.m_rt, cmt.m_rp, cmt.m_tp]
@@ -83,7 +83,7 @@ plot_si_bb_comp(ax, cmt, cmt_init)
 
 # 9ZT
 ax = plt.subplot(G[0,2])
-cmtfile = "./cmt/CMTSOLUTION_" + event_name + "_9p_ZT"
+cmtfile = "./cmt/" + event_name + "_9p_ZT"
 cmt = Source.from_CMTSOLUTION_file(cmtfile)
 print cmt.moment_magnitude
 mt = [cmt.m_rr, cmt.m_tt, cmt.m_pp, cmt.m_rt, cmt.m_rp, cmt.m_tp]
@@ -91,7 +91,7 @@ plot_si_bb_comp(ax, cmt, cmt_init)
 
 # 6ZT+DC
 ax = plt.subplot(G[1,0])
-cmtfile = "./cmt/CMTSOLUTION_" + event_name + "_6p_ZT_DC"
+cmtfile = "./cmt/" + event_name + "_6p_ZT_DC"
 cmt = Source.from_CMTSOLUTION_file(cmtfile)
 print cmt.moment_magnitude
 mt = [cmt.m_rr, cmt.m_tt, cmt.m_pp, cmt.m_rt, cmt.m_rp, cmt.m_tp]
@@ -99,7 +99,7 @@ plot_si_bb_comp(ax, cmt, cmt_init)
 
 # 7ZT+DC
 ax = plt.subplot(G[1,1])
-cmtfile = "./cmt/CMTSOLUTION_" + event_name + "_7p_ZT_DC"
+cmtfile = "./cmt/" + event_name + "_7p_ZT_DC"
 cmt = Source.from_CMTSOLUTION_file(cmtfile)
 print cmt.moment_magnitude
 mt = [cmt.m_rr, cmt.m_tt, cmt.m_pp, cmt.m_rt, cmt.m_rp, cmt.m_tp]
@@ -107,7 +107,7 @@ plot_si_bb_comp(ax, cmt, cmt_init)
 
 # 9ZT+DC
 ax = plt.subplot(G[1,2])
-cmtfile = "./cmt/CMTSOLUTION_" + event_name + "_9p_ZT_DC"
+cmtfile = "./cmt/" + event_name + "_9p_ZT_DC"
 cmt = Source.from_CMTSOLUTION_file(cmtfile)
 print cmt.moment_magnitude
 mt = [cmt.m_rr, cmt.m_tt, cmt.m_pp, cmt.m_rt, cmt.m_rp, cmt.m_tp]

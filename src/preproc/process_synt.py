@@ -31,7 +31,7 @@ event_time = event.preferred_origin().time
 print "Event time:", event_time
 
 # set the filter band
-period_band = [60, 120]
+period_band = [27, 60]
 
 #output dir
 event_name = get_event_name(event)
@@ -46,8 +46,9 @@ sampling_rate = 1.0
 # processing
 t1 = time.time()
 # data filename
-#suffix_list = [ "Mpp", "Mrt", "Mrp", "Mtp"]
-suffix_list = ["", ]
+#suffix_list = ["Mrr", "Mtt", "Mpp", "Mrt", "Mrp", "Mtp"]
+suffix_list = ["Mrr", "Mtt", "Mpp", "Mrt", "Mrp", "Mtp", "lon", "lat", "dep"]
+#suffix_list = ["", ]
 
 print "Summary:"
 print "datadir:", datadir
@@ -58,14 +59,14 @@ print "outputdir:", output_dir
 for suffix in suffix_list:
     print suffix
     if suffix != "":
-        datadir = datadir + "_" + suffix
-    datadir=os.path.join(datadir, "OUTPUT_FILES")
-    stationlist=generate_station_list(datadir)
+        dir = datadir + "_" + suffix
+    dir=os.path.join(dir, "OUTPUT_FILES")
+    stationlist=generate_station_list(dir)
     #stationlist = [stationlist[0],]
     #print stationlist
     for station in stationlist:
         #print station
-        process_synt(datadir, station, event, stationxml_dir, period_band, npts, sampling_rate, output_dir, suffix=suffix)
+        process_synt(dir, station, event, stationxml_dir, period_band, npts, sampling_rate, output_dir, suffix=suffix)
 
 t2 = time.time()
 print "Total time:", t2-t1
