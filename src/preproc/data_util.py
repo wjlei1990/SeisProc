@@ -128,7 +128,7 @@ def process_data(filename, event = None, stationxml_dir = None, period_band = No
         tr.write(path, format = "SAC")
 
     # save plot fig
-    figure_name = nwname + "." + stname + ".png"
-    figure_path = os.path.join(output_dir, figure_name)
-    print "figure path:", figure_path
-    st.plot(outfile=figure_path)
+    #figure_name = nwname + "." + stname + ".png"
+    #figure_path = os.path.join(output_dir, figure_name)
+    #print "figure path:", figure_path
+    #st.plot(outfile=figure_path)
