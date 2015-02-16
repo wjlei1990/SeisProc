@@ -1,11 +1,8 @@
 import glob
 import os
-
 from pyasdf import ASDFDataSet
 
-filename = "synthetic.h5"
-
-def convert_asdf(filelist, asdf_fn, staxml_filelist=None, quakemlfile=None, tag=None):
+def convert_asdf(filelist, asdf_fn, quakemlfile, staxml_filelist=None, tag=None):
 
     nfiles = len(filelist)
     if nfiles == 0:
@@ -13,7 +10,7 @@ def convert_asdf(filelist, asdf_fn, staxml_filelist=None, quakemlfile=None, tag=
         return
 
     if os.path.exists(asdf_fn):
-        raise Exception("File '%s' exists." % filename)
+        raise Exception("File '%s' exists." % asdf_fn)
 
     ds = ASDFDataSet(asdf_fn)
 
@@ -23,8 +20,7 @@ def convert_asdf(filelist, asdf_fn, staxml_filelist=None, quakemlfile=None, tag=
         ds.add_quakeml(quakemlfile)
         event = ds.events[0]
     else:
-        print "No event info added"
-        event = None
+        raise ValueError("No Event file")
 
     # Add waveforms.
     print "Adding Waveform data"
@@ -32,18 +28,15 @@ def convert_asdf(filelist, asdf_fn, staxml_filelist=None, quakemlfile=None, tag=
         if os.path.exists(filename):
             #print("Adding file %i of %i: %s" % (_i + 1, 
             #       len(filelist), os.path.basename(filename)))
-            #ds.add_waveforms(filename, tag="synthetic", event_id=event)
-            ds.add_waveforms(filename, tag=tag)
+            ds.add_waveforms(filename, tag=tag, event_id=event)
         else:
             print("File not exist %i of %i")
 
     # Add StationXML files.
     if staxml_filelist is not None and len(staxml_filelist) > 0: 
-        #search_pattern = os.path.join(stationxml_dir, "*.xml")
-        #filenames = glob.glob(search_pattern)
         for _i, filename in enumerate(staxml_filelist):
             if os.path.exists(filename):
-                print("Adding StationXML file %i of %i..." % (_i + 1, len(filenames)))
+                #print("Adding StationXML file %i of %i..." % (_i + 1, len(filenames)))
                 ds.add_stationxml(filename)
     else:
         print("No stationxml added")

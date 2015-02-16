@@ -2,19 +2,32 @@ import obspy
 from obspy.core.util.geodetics import gps2DistAzimuth
 from obspy.signal.invsim import c_sac_taper
 import numpy as np
-
 from pyasdf import ASDFDataSet
+import glob
+import os
+import time
 
-ds = ASDFDataSet("./synthetic.h5")
+t1 = time.time()
+
+eventname = "201302091416A"
+old_tag = "raw_synthetic"
+asdf_fn = eventname + "_" + old_tag + ".h5"
+if not os.path.exists(asdf_fn):
+    raise ValueError("No asdf file fould %s" %asdf_fn)
+
+# read in dataset
+ds = ASDFDataSet(asdf_fn)
+
+# read in event
 event = ds.events[0]
-
 origin = event.preferred_origin() or event.origins[0]
 event_latitude = origin.latitude
 event_longitude = origin.longitude
+event_time = origin.time
 
 # Figure out these parameters somehonw!
-starttime = obspy.UTCDateTime("2010-03-11T06:22:19.021324Z")
-npts = 5708
+starttime = event_time
+npts = 3600
 sampling_rate = 1.0
 
 # Loop over both period sets. This will result in two files. It could also be
@@ -61,8 +74,8 @@ for min_period, max_period in [(27.0, 60.0)]:
 
         components = [tr.stats.channel[-1] for tr in st]
         if "N" in components and "E" in components:
-            station_latitude = inv[0][0].latitude
-            station_longitude = inv[0][0].longitude
+            station_latitude = float(inv[0][0].latitude)
+            station_longitude = float(inv[0][0].longitude)
             _, baz, _ = gps2DistAzimuth(station_latitude, station_longitude,
                                         event_latitude, event_longitude)
 
@@ -74,11 +87,15 @@ for min_period, max_period in [(27.0, 60.0)]:
 
         return st
 
-    tag_name = "preprocessed_synthetic_%is_to_%is" % \
+    new_tag = "proc_synt_%is_to_%is" % \
         (int(min_period), int(max_period))
 
     tag_map = {
-        "synthetic": tag_name
+        old_tag : new_tag
     }
 
-    ds.process(process_function, tag_name + ".h5", tag_map=tag_map)
+    outputfn = eventname + "_" + new_tag + ".h5"
+    ds.process(process_function, outputfn, tag_map=tag_map)
+
+t2 = time.time()
+print "Elapsed time:", t2-t1
