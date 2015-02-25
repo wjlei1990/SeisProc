@@ -38,7 +38,7 @@ def merge_windfile(winfiledir, event):
 
 def merge_single_winfile(winbasedir, event_tag, outdir, databasedir):
 
-    outputfile = os.path.join(outdir, event_tag)
+    outputfile = os.path.join(outdir, "%s.win" %event_tag)
     windir = os.path.join(winbasedir, event_tag)
     alllist = glob.glob( windir + "/*.win")
 

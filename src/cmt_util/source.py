@@ -155,11 +155,12 @@ class CMTSource(object):
                 eventname = descrip.text
                 eventname = self.adjust_eventname(eventname)
         cmt_time = cmtsolution.time
-        half_duration = event.focal_mechanisms[0].moment_tensor.source_time_function.duration
+        focal_mechanism = event.focal_mechanisms[0]
+        half_duration = focal_mechanism.moment_tensor.source_time_function.duration/2.0
         latitude = cmtsolution.latitude
         longitude = cmtsolution.longitude
         depth_in_m = cmtsolution.depth
-        tensor = event.focal_mechanisms[0].moment_tensor.tensor
+        tensor = focal_mechanism.moment_tensor.tensor
         m_rr = tensor.m_rr
         m_tt = tensor.m_tt
         m_pp = tensor.m_pp
@@ -183,7 +184,7 @@ class CMTSource(object):
         with open(filename, "w") as f:
             # Reconstruct the first line as well as possible. All
             # hypocentral information is missing.
-            f.write('PDE %4i %2i %2i %2i %2i %5.2f %8.4f %9.4f %5.1f %.1f %.1f'
+            f.write(' PDE %4i %2i %2i %2i %2i %5.2f %8.4f %9.4f %5.1f %.1f %.1f'
                     ' %s\n' % (
                         self.origin_time.year,
                         self.origin_time.month,
@@ -200,7 +201,7 @@ class CMTSource(object):
                         self.mb,
                         self.ms,
                         self.region_tag))
-            f.write('event name:   %s\n' % (self.eventname,))
+            f.write('event name:     %s\n' % (self.eventname,))
             f.write('time shift:%12.4f\n' % (self.time_shift,))
             f.write('half duration:%9.4f\n' % (self.half_duration,))
             f.write('latitude:%14.4f\n' % (self.latitude,))

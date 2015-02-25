@@ -19,13 +19,13 @@ def plot_si_bb(ax, cmt):
     ax.set_ylim([-1,1.5])
     ax.set_aspect('equal')
     # magnitude
-    text = "Mw=%3.2f" %cmt.moment_magnitude
+    text = "Mw=%4.3f" %cmt.moment_magnitude
     plt.text(-0.9, -0.3, text, fontsize=7)
     # lat and lon
-    text = "lat=%6.2f$^\circ$; lon=%6.2f$^\circ$" %(cmt.latitude, cmt.longitude)
+    text = "lat=%6.3f$^\circ$; lon=%6.3f$^\circ$" %(cmt.latitude, cmt.longitude)
     plt.text(-0.9, -0.5, text, fontsize=7)
     #depth
-    text = "dep=%6.2f km;" %(cmt.depth_in_m/1000.0)
+    text = "dep=%6.3f km;" %(cmt.depth_in_m/1000.0)
     plt.text(-0.9, -0.7, text, fontsize=7)
     ax.set_xticks([])
     ax.set_yticks([])
@@ -44,13 +44,13 @@ def plot_si_bb_comp(ax, cmt, cmt_init, tag):
     ax.set_ylim([-1,1.5])
     ax.set_aspect('equal')
     # magnitude
-    text = r"$\Delta$Mw=%3.2f" %(cmt.moment_magnitude-cmt_init.moment_magnitude)
+    text = r"$\Delta$Mw=%4.3f" %(cmt.moment_magnitude-cmt_init.moment_magnitude)
     plt.text(-0.9, -0.3, text, fontsize=7)
     # lat and lon
-    text = r"$\Delta$lat=%6.2f$^\circ$; $\Delta$lon=%6.2f$^\circ$" %(cmt.latitude-cmt_init.latitude, cmt.longitude-cmt_init.longitude)
+    text = r"$\Delta$lat=%6.3f$^\circ$; $\Delta$lon=%6.3f$^\circ$" %(cmt.latitude-cmt_init.latitude, cmt.longitude-cmt_init.longitude)
     plt.text(-0.9, -0.5, text, fontsize=7)
     #depth
-    text = r"$\Delta$dep=%6.2f km;" %((cmt.depth_in_m-cmt_init.depth_in_m)/1000.0)
+    text = r"$\Delta$dep=%6.3f km;" %((cmt.depth_in_m-cmt_init.depth_in_m)/1000.0)
     plt.text(-0.9, -0.7, text, fontsize=7)
     ax.set_xticks([])
     ax.set_yticks([])
@@ -59,12 +59,14 @@ def plot_si_bb_comp(ax, cmt, cmt_init, tag):
     plt.text(-0.9, 1.3, text, fontsize=7)
     
     
-if len(sys.argv) != 2:
+if len(sys.argv) != 3:
     raise ValueError("Incorrect arg number")
 
 event_name = sys.argv[1]
+type_tag = sys.argv[2]
 
 basedir = "/home/lei/DATA/GRD_CMT3D/cmt3d/XFILES_RESULT"
+basedir = basedir + "_" + type_tag
 cmtbase = os.path.join(basedir, "CMTSOLUTION_%s" %event_name)
 
 print "Plotting event:", event_name
@@ -156,7 +158,8 @@ b = Beach(mt_init, xy=(x,y), width=20, linewidth=1, alpha=0.85)
 #b.set_zorder(100)
 ax.add_collection(b)
 
-outputfile = "%s_result.png" %event_name
+outputfile = "%s_%s.png" %(event_name, type_tag)
+print "Output file:", outputfile
 
 fig1.savefig(outputfile)
 #plt.show()

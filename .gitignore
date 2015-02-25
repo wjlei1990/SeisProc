@@ -7,3 +7,4 @@ log
 *.py~
 test.py
 *.png
+*XEVENTID*
