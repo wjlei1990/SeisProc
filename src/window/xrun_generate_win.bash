@@ -2,6 +2,10 @@
 
 period_low=(27 60)
 period_high=(60 120)
+#period_low=(60)
+#period_high=(120)
+#period_low=(27)
+#period_high=(60)
 
 scriptname="generate_window_clover.py"
 
