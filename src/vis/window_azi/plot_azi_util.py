@@ -29,7 +29,26 @@ def read_station(station_file):
     return station_info
 
 def load_win_file(winfile):
-    
+    win_info = {}
+    with open(winfile, 'r') as fh:
+        nfiles = int(fh.readline().strip())
+        for _idx in range(nfiles):
+            obsd_fn = fh.readline().strip()
+            synt_fn = fh.readline().strip()
+            nwin = int(fh.readline().strip())
+            for _iwin in range(nwin):
+                dummy = fh.readline()
+            basename = os.path.basename(synt_fn)
+            #print basename.split(".")
+            [sta, nw, comp, tag] = basename.split(".")
+
+            key = nw + "." + sta
+            if key in win_info.keys():
+                win_info[key][comp[2]] = nwin
+            else:
+                win_info[key] = {}
+                win_info[key][comp[2]] = nwin
+    return win_info
 
 def sort_azimuth(theta, n):
     num=[ 0 for i in range(n)]
@@ -45,18 +64,11 @@ def sort_azimuth(theta, n):
         num[i] = count
     return bins, num
 
+"""
 if len(sys.argv) != 2:
     raise ValueError('Input Argument Wrong!')
 else:
     event=sys.argv[1]
-
-basedir='./waveforms'
-outputdir='./output'
-eventpath = join(basedir, event)
-onlyfiles = [ f for f in listdir(eventpath) if isfile(join(eventpath,f)) ]
-
-# get station information
-station_file = './STATIONS'
 
 def plot_window_azi(winfile, quakemlfile, stationfile):
     station = read_station(station_file)
@@ -81,6 +93,7 @@ def plot_window_azi(winfile, quakemlfile, stationfile):
         lons.append(lon)
 
     # read cmt_info
+
     cmt_file = './cmt/' + event
     cmt_info = read_cmt_file(cmt_file)
     cmt_lat = cmt_info[0]
@@ -165,3 +178,4 @@ def plot_window_azi(winfile, quakemlfile, stationfile):
         os.makedirs(outputdir)
     #pl.show()
     savefig(outputfn,dpi = 300)
+    """
