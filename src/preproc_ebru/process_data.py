@@ -53,17 +53,13 @@ sampling_rate = 1.0
 
 # processing
 t1 = time.time()
-# data filename
 
-filelist = glob.glob(datadir+"/*.mseed")
+# data filename
+filelist = glob.glob(datadir+"/*.sac")
 print "Total number of file:", len(filelist)
 
-
-#process_data(datafile, event, stationxml_dir, period_band, npts, sampling_rate, output_dir)
 for datafile in filelist:
     process_data(datafile, event, stationxml_dir, period_band, npts, sampling_rate, output_dir)
-#datafile = "../OBSD/010104J/IC.ENH.mseed"
-#process_data(datafile, event, stationxml_dir, period_band, npts, sampling_rate, output_dir)
 
 t2 = time.time()
 print "Total time:", t2-t1
