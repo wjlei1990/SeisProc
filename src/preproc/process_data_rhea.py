@@ -5,15 +5,18 @@ import glob
 import os
 import re
 from data_util import *
+import sys
 
-eventname = "201402262113B"
+if len(sys.argv) != 4:
+    raise ValueError("Incorrect arg number")
+
+eventname = sys.argv[1]
 # set the filter band
-#period_band = [27, 60]
-period_band = [60, 120]
+period_band = [int(sys.argv[2]), int(sys.argv[3])]
 
-# Rhea
-basedir = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS"
-quakemldir = "/ccs/home/lei/CMT_BIN/quakeml"
+# rhea
+basedir = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_SI"
+quakemldir = "/ccs/home/lei/SOURCE_INVERSION/quakeml"
 stationxml_dir = os.path.join(basedir, "OBSD", "stationxml")
 outputbase = os.path.join(basedir, "OBSD_PROC")
 database = os.path.join(basedir, "OBSD", "waveforms")
@@ -50,7 +53,6 @@ t1 = time.time()
 
 filelist = glob.glob(datadir+"/*.mseed")
 print "Total number of file:", len(filelist)
-
 
 #process_data(datafile, event, stationxml_dir, period_band, npts, sampling_rate, output_dir)
 for datafile in filelist:

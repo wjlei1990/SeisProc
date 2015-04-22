@@ -27,7 +27,7 @@ module cmt3d_constants
   integer, parameter :: NRECMAX = 1200
   
 ! maximum number of windows
-  integer, parameter :: NWINMAX = 1800
+  integer, parameter :: NWINMAX = 10000
 
 ! number of pars for moment only
   integer, parameter :: NM = 6

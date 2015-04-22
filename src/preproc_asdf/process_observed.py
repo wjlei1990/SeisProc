@@ -8,11 +8,18 @@ from pyasdf import ASDFDataSet
 
 t1 = time.time()
 
-eventname = "201302091416A"
+eventname = "010403A"
 old_tag = "raw_observed"
-asdf_fn = eventname + "_" + old_tag + ".h5"
+
+basedir = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_SI/ASDF/raw"
+outputdir = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_SI/ASDF/proc"
+
+asdf_fn = eventname + "." + old_tag + ".h5"
+asdf_fn = os.path.join(basedir, asdf_fn)
+
 if not os.path.exists(asdf_fn):
     raise ValueError("No asdf file found: %s" %asdf_fn)
+print "Input file:", asdf_fn
 
 # read in dataset
 ds = ASDFDataSet(asdf_fn)
@@ -31,7 +38,8 @@ sampling_rate = 1.0
 
 # Loop over both period sets. This will result in two files. It could also be
 # saved to the same file.
-for min_period, max_period in [(27.0, 60.0)]:
+for min_period, max_period in [(35.0, 60.0), (60, 120)]:
+#for min_period, max_period in [(35.0, 60.0)]:
     f2 = 1.0 / max_period
     f3 = 1.0 / min_period
     f1 = 0.8 * f2
@@ -69,13 +77,16 @@ for min_period, max_period in [(27.0, 60.0)]:
 
         return st
 
-    new_tag = "proc_%is_to_%is" % (int(min_period), int(max_period))
+    new_tag = "proc_obsd_%i_%i" % (int(min_period), int(max_period))
 
     tag_map = {
         old_tag : new_tag 
     }
 
-    outputfn = eventname + "_" + new_tag + ".h5"
+    outputfn = eventname + "." + new_tag + ".h5"
+    outputfn = os.path.join(outputdir, outputfn)
+    if os.path.exists(outputfn):
+        os.remove(outputfn)
     ds.process(process_function, outputfn, tag_map=tag_map)
 
 t2=time.time()

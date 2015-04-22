@@ -64,8 +64,13 @@ def process_data(filename, event = None, stationxml_dir = None, period_band = No
     # print "LALALALA:",stationxml_dir, adjust_event_name
     stationxml_file = os.path.join(stationxml_dir, short_event_name, "%s.%s.xml" %(nwname, stname))
     print "Attaching stationxml file:", stationxml_file
-    inv = read_inventory(stationxml_file)
-    st.attach_response(inv)
+    try:
+        inv = read_inventory(stationxml_file)
+        st.attach_response(inv)
+    except Exception as e:
+        print "error:",e
+        return
+
     #st.plot()
 
     for i, tr in enumerate(st):
@@ -81,8 +86,12 @@ def process_data(filename, event = None, stationxml_dir = None, period_band = No
         #print "response show:"
         #print tr.stats.response
         print "Remove Response..."
-        tr.remove_response(output="DISP", pre_filt=pre_filt, zero_mean=False,
+        try:
+            tr.remove_response(output="DISP", pre_filt=pre_filt, zero_mean=False,
                            taper=False)
+        except Exception as e:
+            print "Error:", e
+            return
         print "Detrend, Demean and Taper again..."
         tr.detrend("linear")
         tr.detrend("demean")

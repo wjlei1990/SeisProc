@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -A GEO111
+#PBS -N Proc_SYNT
+#PBS -j oe
+#PBS -l walltime=50:00:00,nodes=1
+
+cd $PBS_O_WORKDIR
+date
+./xrun_synt.bash
+
+echo 
+echo "Done"
+

@@ -25,6 +25,16 @@ contains
     call rsac1(file_s,syn_sngl,npts1,b1,dt1,NDATAMAX,nerr)
     if (nerr.ne.0) stop ' Error reading synthetic file'
 
+    ! read event and station header parameters from observation file
+    call getfhv('evla', evla, nerr)
+    call getfhv('evlo', evlo, nerr)
+    call getfhv('stla', stla, nerr)
+    call getfhv('stlo', stlo, nerr)
+    call getfhv('evdp', evdp, nerr)
+    call getkhv('kstnm', kstnm, nerr)
+    call getkhv('kcmpnm', kcmpnm, nerr)
+    call getkhv('knetwk', knetwk, nerr)
+
     ! read observed
     call rsac1(file_o,data_sngl, npts2,b2,dt2,NDATAMAX,nerr)
     if (nerr.ne.0) stop ' Error reading data file '
@@ -43,16 +53,6 @@ contains
 
     ! DEBUG
 !    if (DEBUG) write(*,*) 'DEBUG : b, dt, npts ', b, dt, npts
-
-    ! read event and station header parameters from observation file
-    call getfhv('evla', evla, nerr)
-    call getfhv('evlo', evlo, nerr)
-    call getfhv('stla', stla, nerr)
-    call getfhv('stlo', stlo, nerr)
-    call getfhv('evdp', evdp, nerr)
-    call getkhv('kstnm', kstnm, nerr)
-    call getkhv('kcmpnm', kcmpnm, nerr)
-    call getkhv('knetwk', knetwk, nerr)
 
     cmp=kcmpnm(3:3)
 
@@ -116,7 +116,15 @@ contains
 
        ! azimuth counts
        k = floor(azimuth(i)/daz) + 1
-       if (k < 0 .or. k > NREGIONS) stop 'Error binning azimuth'
+       if (k < 0 .or. k > NREGIONS) then
+          if ( (azimuth(i) - 360.0) .lt. 0.001 ) then
+            print *, "attention for azi:", i, azimuth(i)
+            k = NREGIONS
+          else
+            print *, azimuth(i), k, NREGIONS, daz
+            stop 'Error binning azimuth'
+          endif
+       endif
        naz(k) = naz(k) + 1
     enddo
 
@@ -129,6 +137,9 @@ contains
        do j = 1, nwins(i)
           nwint = nwint + 1
           k = floor(azimuth(i)/daz) + 1
+          if ( k == (NREGIONS +1) ) then
+            k = NREGIONS
+          endif
           data_weights(nwint) =  cmp_weight(nwint) &
                * ( (dist_km(i)/REF_DIST) ** dist_exp_weight(nwint) ) &
                / ( naz(k) ** az_exp_weight)

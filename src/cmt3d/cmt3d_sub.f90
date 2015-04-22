@@ -231,6 +231,10 @@ contains
           call compute_A_b(syn_file,data_file,data_weights(nwint),tstart,tend,A1,b1,npar)
           A = A + A1
           b = b + b1
+          !write(*,*) "i,file:", trim(syn_file)
+          !write(*,*) "i,j,data weights ", i,j,data_weights(nwint), sum(A1), sum(b1)
+          !write(*,*) "A1: ", sum(A1)
+          !write(*,*) "b1:", sum(b1)
        enddo
     enddo
     close(IOWIN)

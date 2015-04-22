@@ -5,21 +5,22 @@ import glob
 import os
 import re
 from synt_util import *
+import sys
+
+if len(sys.argv) != 4:
+    raise ValueError("Incorrect arg number")
+
+eventname = sys.argv[1]
+# set the filter band
+period_band = [int(sys.argv[2]), int(sys.argv[3])]
 
 # Rhea
-#quakemldir = "/ccs/home/lei/SOURCE_INVERSION/quakeml/cmt_deep_events/quakeml"
-#stationxml_dir = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD/deep_events/stationxml"
-#outputbase = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD_PROC"
-#database = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD/deep_events/waveforms"
-
-# local machine
-basedir = "/home/lei/Research/SOURCE_INVERSION/DATA"
-quakemldir = os.path.join(basedir, "Quakeml")
-stationxml_dir = os.path.join(basedir, "stationxml")
+basedir = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_SI"
+quakemldir = "/ccs/home/lei/SOURCE_INVERSION/quakeml" 
+stationxml_dir = os.path.join(basedir, "OBSD", "stationxml")
 outputbase = os.path.join(basedir, "SYNT_PROC")
-database = os.path.join(basedir, "SYNT")
-
-eventname = "010104J"
+#database = "/lustre/atlas/scratch/lei/geo111/SOURCE_INVERSION/run_scripts/job_shallow_39/data"
+database = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_SI/SYNT/temp/data"
 
 datadir = os.path.join(database, eventname)
 
@@ -30,8 +31,6 @@ event = cat.events[0]
 event_time = event.preferred_origin().time
 print "Event time:", event_time
 
-# set the filter band
-period_band = [60, 120]
 
 #output dir
 event_name = get_event_name(event)
@@ -46,7 +45,7 @@ sampling_rate = 1.0
 # processing
 t1 = time.time()
 # data filename
-#suffix_list = [ "Mpp", "Mrt", "Mrp", "Mtp"]
+#suffix_list = [ "", "Mrr", "Mtt", "Mpp", "Mrt", "Mrp", "Mtp", "lon", "lat", "dep"]
 suffix_list = ["", ]
 
 print "Summary:"
@@ -58,14 +57,16 @@ print "outputdir:", output_dir
 for suffix in suffix_list:
     print suffix
     if suffix != "":
-        datadir = datadir + "_" + suffix
-    datadir=os.path.join(datadir, "OUTPUT_FILES")
-    stationlist=generate_station_list(datadir)
+        ddir = datadir + "_" + suffix
+    else:
+        ddir = datadir
+    ddir=os.path.join(ddir, "OUTPUT_FILES")
+    stationlist=generate_station_list(ddir)
     #stationlist = [stationlist[0],]
     #print stationlist
     for station in stationlist:
         #print station
-        process_synt(datadir, station, event, stationxml_dir, period_band, npts, sampling_rate, output_dir, suffix=suffix)
+        process_synt(ddir, station, event, stationxml_dir, period_band, npts, sampling_rate, output_dir, suffix=suffix)
 
 t2 = time.time()
 print "Total time:", t2-t1

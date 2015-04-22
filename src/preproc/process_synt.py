@@ -17,7 +17,7 @@ basedir = "/home/lei/Research/SOURCE_INVERSION/DATA"
 quakemldir = os.path.join(basedir, "Quakeml")
 stationxml_dir = os.path.join(basedir, "stationxml")
 outputbase = os.path.join(basedir, "SYNT_PROC")
-database = os.path.join(basedir, "SYNT")
+database = os.path.join(basedir, "SYNT", "temp")
 
 eventname = "010104J"
 

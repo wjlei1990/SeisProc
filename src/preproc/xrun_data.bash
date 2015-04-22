@@ -1,9 +1,9 @@
 #!/bin/bash
 
-period_low=(27 60)
+period_low=(35 60)
 period_high=(60 120)
 
-scriptname="process_data_clover.py"
+scriptname="process_data_rhea.py"
 
 while read line
 do
@@ -12,5 +12,5 @@ do
 	python $scriptname $line ${period_low[0]} ${period_high[0]}
 	echo "python $scriptname $line ${period_low[1]} ${period_high[1]}"
 	python $scriptname $line ${period_low[1]} ${period_high[1]}
-done < XEVENTID
+done < XEVENTID_ALL
 

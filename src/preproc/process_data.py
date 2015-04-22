@@ -7,17 +7,17 @@ import re
 from data_util import *
 
 # Rhea
-#quakemldir = "/ccs/home/lei/SOURCE_INVERSION/quakeml/cmt_deep_events/quakeml"
-#stationxml_dir = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD/deep_events/stationxml"
-#outputbase = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD_PROC"
-#database = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD/deep_events/waveforms"
+quakemldir = "/ccs/home/lei/SOURCE_INVERSION/quakeml/cmt_deep_events/quakeml"
+stationxml_dir = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD/deep_events/stationxml"
+outputbase = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD_PROC"
+database = "/lustre/atlas/proj-shared/geo111/Wenjie/DATA_PROCESS/OBSD/deep_events/waveforms"
 
 # local machine
-basedir = "/home/lei/Research/SOURCE_INVERSION/DATA"
-quakemldir = os.path.join(basedir, "Quakeml")
-stationxml_dir = os.path.join(basedir, "stationxml")
-outputbase = os.path.join(basedir, "OBSD_PROC")
-database = os.path.join(basedir, "OBSD")
+#basedir = "/home/lei/Research/SOURCE_INVERSION/DATA"
+#quakemldir = os.path.join(basedir, "Quakeml")
+#stationxml_dir = os.path.join(basedir, "stationxml")
+#outputbase = os.path.join(basedir, "OBSD_PROC")
+#database = os.path.join(basedir, "OBSD")
 
 eventname = "010104J"
 
